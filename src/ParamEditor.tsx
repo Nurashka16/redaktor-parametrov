@@ -26,15 +26,33 @@ interface State {
 class ParamEditor extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { selectedParam: new Map() };
+    const initialMap = new Map<number, string>();
+    this.props.params.forEach((param) => {
+      const values = this.props.model.paramValues
+        .filter(pv => pv.paramId === param.id)
+        .map(pv => pv.value);
+      initialMap.set(param.id, values.length > 0 ? values[values.length - 1] : "");
+    });
+    this.state = { selectedParam: initialMap };
   }
 
   public getModel(): Model {
-    return { paramValues: [] };
+    const paramValues = this.props.params.map(param => ({
+      paramId: param.id,
+      value: this.state.selectedParam.get(param.id) || ""
+    }));
+    return {
+      paramValues,
+      ...(this.props.model.colors !== undefined && { colors: this.props.model.colors })
+    };
   }
 
   public changeParamsModel(id: number, value: string) {
-    
+    this.setState(prevState => {
+      const newMap = new Map(prevState.selectedParam);
+      newMap.set(id, value);
+      return { selectedParam: newMap };
+    });
   }
 
   render() {
@@ -46,7 +64,7 @@ class ParamEditor extends React.Component<Props, State> {
             <span>{param.name}</span>
             <input
               type="text"
-              value=""
+              value={this.state.selectedParam.get(param.id) ?? ""}
               onChange={(e) => this.changeParamsModel(param.id, e.target.value)}
               style={{ marginLeft: "10px", marginTop: "5px" }}
             />
