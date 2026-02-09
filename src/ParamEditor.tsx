@@ -33,8 +33,27 @@ class ParamEditor extends React.Component<Props, State> {
     return { paramValues: [] };
   }
 
+  public changeParamsModel(id: number, value: string) {
+    
+  }
+
   render() {
-    return <div></div>;
+    const { params } = this.props;
+    return (
+      <div>
+        {params.map((param) => (
+          <div key={param.id} style={{ textAlign: "center" }}>
+            <span>{param.name}</span>
+            <input
+              type="text"
+              value=""
+              onChange={(e) => this.changeParamsModel(param.id, e.target.value)}
+              style={{ marginLeft: "10px", marginTop: "5px" }}
+            />
+          </div>
+        ))}
+      </div>
+    );
   }
 }
 
