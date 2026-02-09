@@ -15,7 +15,7 @@ export interface Model {
   paramValues: ParamValue[];
   colors?: Color[];
 }
-interface Props {
+export interface Props {
   params: Param[];
   model: Model;
 }
